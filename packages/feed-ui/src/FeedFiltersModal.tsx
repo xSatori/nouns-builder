@@ -320,7 +320,7 @@ export const FeedFiltersModal: React.FC<FeedFiltersModalProps> = ({
               type="button"
               disabled={!hasFilters}
             >
-              Reset to Defaults
+              Reset
             </Button>
             <Button type="submit">Apply Filters</Button>
           </Flex>
