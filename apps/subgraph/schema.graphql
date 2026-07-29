@@ -292,6 +292,20 @@ type TreasuryAssetPin @entity {
   revokedTxHash: Bytes
 }
 
+type ProfileLinkOverride @entity {
+  id: ID!
+  transactionHash: Bytes!
+  timestamp: BigInt!
+  profile: Bytes!
+  key: String!
+  value: String!
+  creator: Bytes!
+  revoked: Boolean!
+  revokedAt: BigInt
+  revokedBy: Bytes
+  revokedTxHash: Bytes
+}
+
 enum ProposalVoteSupport {
   FOR
   AGAINST

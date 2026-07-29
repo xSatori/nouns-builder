@@ -15,6 +15,7 @@ import {
   DAO,
   DaoMultisigUpdate,
   Proposal,
+  ProfileLinkOverride,
   ProposalCandidateGroup,
   ProposalCandidateVersion,
   ProposalUpdate,
@@ -29,9 +30,11 @@ import {
   decodeCandidateComment,
   decodeCandidateSponsorSignature,
   decodeDaoMultisig,
+  decodeProfileLink,
   decodePropdate,
   decodeProposalCandidate,
   decodeTreasuryAssetPin,
+  PROFILE_LINK_SCHEMA_UID,
   PROPDATE_SCHEMA_UID,
   PROPOSAL_CANDIDATE_SCHEMA_UID,
   TREASURY_ASSET_PIN_SCHEMA_UID,
@@ -230,6 +233,49 @@ function handleTreasuryAssetPinRevoked(event: RevokedEvent): void {
   pin.revokedBy = event.params.attester
   pin.revokedTxHash = event.transaction.hash
   pin.save()
+}
+
+function handleProfileLinkAttestation(event: AttestedEvent): void {
+  if (event.params.attester != event.params.recipient) {
+    return
+  }
+
+  const data = getAttestation(event.address, event.params.uid)
+  if (!data) {
+    return
+  }
+
+  const link = decodeProfileLink(data)
+  if (!link) {
+    return
+  }
+
+  const override = new ProfileLinkOverride(event.params.uid.toHexString())
+  override.profile = event.params.recipient
+  override.transactionHash = event.transaction.hash
+  override.timestamp = event.block.timestamp
+  override.key = link.key
+  override.value = link.value
+  override.creator = event.params.attester
+  override.revoked = false
+  override.save()
+}
+
+function handleProfileLinkRevoked(event: RevokedEvent): void {
+  if (event.params.attester != event.params.recipient) {
+    return
+  }
+
+  const override = ProfileLinkOverride.load(event.params.uid.toHexString())
+  if (!override) {
+    return
+  }
+
+  override.revoked = true
+  override.revokedAt = event.block.timestamp
+  override.revokedBy = event.params.attester
+  override.revokedTxHash = event.transaction.hash
+  override.save()
 }
 
 function loadOrCreateCandidateGroup(
@@ -794,6 +840,8 @@ export function handleAttested(event: AttestedEvent): void {
     handlePropdateAttestation(event)
   } else if (event.params.schema == TREASURY_ASSET_PIN_SCHEMA_UID) {
     handleTreasuryAssetPinAttestation(event)
+  } else if (event.params.schema == PROFILE_LINK_SCHEMA_UID) {
+    handleProfileLinkAttestation(event)
   } else if (event.params.schema == PROPOSAL_CANDIDATE_SCHEMA_UID) {
     handleProposalCandidateAttestation(event)
   } else if (event.params.schema == CANDIDATE_COMMENT_SCHEMA_UID) {
@@ -813,6 +861,8 @@ export function handleRevoked(event: RevokedEvent): void {
     handlePropdateAttestationRevoked(event)
   } else if (event.params.schema == TREASURY_ASSET_PIN_SCHEMA_UID) {
     handleTreasuryAssetPinRevoked(event)
+  } else if (event.params.schema == PROFILE_LINK_SCHEMA_UID) {
+    handleProfileLinkRevoked(event)
   } else if (event.params.schema == PROPOSAL_CANDIDATE_SCHEMA_UID) {
     handleProposalCandidateRevoked(event)
   } else if (event.params.schema == CANDIDATE_COMMENT_SCHEMA_UID) {
