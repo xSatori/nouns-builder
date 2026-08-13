@@ -1,5 +1,10 @@
 import { PUBLIC_DEFAULT_CHAINS } from '@buildeross/constants/chains'
 import { ETHERSCAN_BASE_URL } from '@buildeross/constants/etherscan'
+import { freezeResolvedIdentityTarget } from '@buildeross/hooks/identity'
+import {
+  isResolvedIdentity,
+  useResolvedIdentityInput,
+} from '@buildeross/hooks/useFarcasterIdentity'
 import { useUserDaos } from '@buildeross/hooks/useUserDaos'
 import { tokenAbi } from '@buildeross/sdk/contract'
 import { daoMembershipRequest } from '@buildeross/sdk/subgraph'
@@ -20,6 +25,7 @@ import {
   delegateDaoMeta,
   delegateModalSection,
   filterLabel,
+  profileLinkEditInput,
 } from 'src/styles/profile.css'
 import useSWR from 'swr'
 import { useAccount, useConfig } from 'wagmi'
@@ -60,6 +66,12 @@ export const DelegateToProfileModal: React.FC<DelegateToProfileModalProps> = ({
   const [error, setError] = React.useState<string | null>(null)
   const [isDelegating, setIsDelegating] = React.useState(false)
   const [isDaoMenuOpen, setIsDaoMenuOpen] = React.useState(false)
+  const [targetInput, setTargetInput] = React.useState<string>(profileAddress)
+  const {
+    resolution: targetResolution,
+    isLoading: isResolvingTarget,
+    revalidate: revalidateTarget,
+  } = useResolvedIdentityInput(targetInput, { enabled: open })
 
   const { data: delegatableDaos, isLoading: isLoadingMemberships } = useSWR(
     open && address && daos.length > 0
@@ -107,8 +119,9 @@ export const DelegateToProfileModal: React.FC<DelegateToProfileModalProps> = ({
       setError(null)
       setIsDelegating(false)
       setIsDaoMenuOpen(false)
+      setTargetInput(profileAddress)
     }
-  }, [open])
+  }, [open, profileAddress])
 
   React.useEffect(() => {
     if (selectedDaoKey || !delegatableDaos?.length) return
@@ -125,19 +138,25 @@ export const DelegateToProfileModal: React.FC<DelegateToProfileModalProps> = ({
   )
 
   const handleDelegate = async () => {
-    if (!selectedDao) return
+    if (!selectedDao || !isResolvedIdentity(targetResolution)) return
 
     setError(null)
     setTxHash(null)
     setIsDelegating(true)
 
     try {
+      const refreshedResolution = await revalidateTarget()
+      const frozenTargetAddress = freezeResolvedIdentityTarget(
+        targetInput,
+        refreshedResolution,
+        targetResolution.address
+      )
       const data = await simulateContract(config, {
         abi: tokenAbi,
         address: selectedDao.collectionAddress,
         chainId: selectedDao.chainId,
         functionName: 'delegate',
-        args: [profileAddress],
+        args: [frozenTargetAddress],
       })
       const hash = await writeContract(config, data.request)
       await waitForTransactionReceipt(config, { hash, chainId: selectedDao.chainId })
@@ -206,9 +225,55 @@ export const DelegateToProfileModal: React.FC<DelegateToProfileModalProps> = ({
         <Flex direction="column" gap="x2">
           <Text variant="heading-sm">Delegate to profile</Text>
           <Text color="text3">
-            Delegate your DAO voting power to{' '}
-            {profileName || walletSnippet(profileAddress)}.
+            The viewed profile is selected by default. You can enter another wallet, ENS
+            name, or Farcaster username before confirming.
           </Text>
+        </Flex>
+
+        <Flex direction="column" gap="x2">
+          <label htmlFor="delegate-target" className={filterLabel}>
+            Delegate target
+          </label>
+          <input
+            id="delegate-target"
+            className={profileLinkEditInput}
+            value={targetInput}
+            onChange={(event) => {
+              setTargetInput(event.target.value)
+              setTxHash(null)
+              setError(null)
+            }}
+            placeholder="0x..., name.eth, or @username"
+            autoComplete="off"
+            spellCheck={false}
+          />
+          {isResolvingTarget ? (
+            <Text color="text3" aria-live="polite">
+              Resolving delegate target...
+            </Text>
+          ) : isResolvedIdentity(targetResolution) ? (
+            <Box className={delegateModalSection} aria-live="polite">
+              <Flex direction="column" gap="x1">
+                <Text>
+                  <strong>Resolved wallet:</strong> {targetResolution.address}
+                </Text>
+                <Text fontSize="12">
+                  Source:{' '}
+                  {targetResolution.source === 'farcaster'
+                    ? `Farcaster @${targetResolution.farcaster?.username}`
+                    : targetResolution.source === 'ens-and-farcaster'
+                      ? 'ENS and Farcaster (same wallet)'
+                      : targetResolution.source === 'ens'
+                        ? `ENS ${targetResolution.ensName}`
+                        : 'Wallet address'}
+                </Text>
+              </Flex>
+            </Box>
+          ) : targetResolution ? (
+            <Text color="negative" role="alert">
+              {targetResolution.message}
+            </Text>
+          ) : null}
         </Flex>
 
         {!address ? (
@@ -275,7 +340,9 @@ export const DelegateToProfileModal: React.FC<DelegateToProfileModalProps> = ({
                 <Flex direction="column" gap="x2">
                   <Text>
                     <strong>Target delegate:</strong>{' '}
-                    {profileName || walletSnippet(profileAddress)}
+                    {isResolvedIdentity(targetResolution)
+                      ? targetResolution.address
+                      : profileName || walletSnippet(profileAddress)}
                   </Text>
                   <Text>
                     <strong>Current delegate:</strong>{' '}
@@ -320,7 +387,12 @@ export const DelegateToProfileModal: React.FC<DelegateToProfileModalProps> = ({
             <ContractButton
               chainId={selectedDao.chainId}
               handleClick={handleDelegate}
-              disabled={isDelegating || !!txHash}
+              disabled={
+                isDelegating ||
+                isResolvingTarget ||
+                !!txHash ||
+                !isResolvedIdentity(targetResolution)
+              }
               loading={isDelegating}
             >
               {txHash ? 'Delegated' : 'Confirm delegation'}

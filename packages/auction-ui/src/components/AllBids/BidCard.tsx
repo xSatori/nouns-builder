@@ -1,4 +1,4 @@
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { AuctionBidFragment } from '@buildeross/sdk/subgraph'
 import { WalletIdentity, WalletIdentityWithPreview } from '@buildeross/ui'
 import { walletSnippet } from '@buildeross/utils/helpers'
@@ -12,7 +12,7 @@ export const BidCard = ({
   bid: AuctionBidFragment
   walletPreview?: boolean
 }) => {
-  const { displayName, ensAvatar } = useEnsData(bid?.bidder)
+  const { displayName, avatar } = useIdentityData(bid?.bidder)
   const resolvedDisplayName = displayName || walletSnippet(bid.bidder as `0x${string}`)
   const comment = bid.comment?.trim()
 
@@ -23,7 +23,7 @@ export const BidCard = ({
           <WalletIdentityWithPreview
             address={bid.bidder as `0x${string}`}
             displayName={resolvedDisplayName}
-            avatarSrc={ensAvatar}
+            avatarSrc={avatar}
             avatarSize="28"
             mobileTapBehavior="toggle"
           />
@@ -31,7 +31,7 @@ export const BidCard = ({
           <WalletIdentity
             address={bid.bidder as `0x${string}`}
             displayName={resolvedDisplayName}
-            avatarSrc={ensAvatar}
+            avatarSrc={avatar}
             avatarSize="28"
             asLink
           />

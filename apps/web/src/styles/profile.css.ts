@@ -823,6 +823,67 @@ export const profileHeaderActions = style({
   flexShrink: 0,
 })
 
+export const identityPreferenceToggle = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+  padding: '8px 10px',
+  border: `1px solid ${color.border}`,
+  borderRadius: '8px',
+  cursor: 'pointer',
+  selectors: {
+    'html[data-theme-mode="dark"] &': { borderColor: vars.color.border },
+    '&:focus-within': { outline: `3px solid ${color.positive}`, outlineOffset: '2px' },
+  },
+})
+
+export const farcasterIdentityCard = style({
+  display: 'grid',
+  gridTemplateColumns: 'minmax(0, 1fr)',
+  gap: '12px',
+  width: '100%',
+  maxWidth: '680px',
+  padding: '12px',
+  border: `1px solid ${color.border}`,
+  borderRadius: '8px',
+  backgroundColor: color.background2,
+  selectors: {
+    'html[data-theme-mode="dark"] &': {
+      borderColor: vars.color.border,
+      backgroundColor: vars.color.background2,
+    },
+  },
+  '@media': {
+    '(min-width: 768px)': { gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)' },
+  },
+})
+
+export const connectedWalletList = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '6px',
+  margin: 0,
+  padding: 0,
+  listStyle: 'none',
+})
+
+export const connectedWalletLink = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: '8px',
+  padding: '7px 8px',
+  borderRadius: '6px',
+  color: color.text1,
+  textDecoration: 'none',
+  selectors: {
+    '&:hover': { backgroundColor: color.neutralHover },
+    '&:focus-visible': { outline: `3px solid ${color.positive}`, outlineOffset: '2px' },
+    'html[data-theme-mode="dark"] &': { color: vars.color.text1 },
+    'html[data-theme-mode="dark"] &:hover': { backgroundColor: vars.color.neutralHover },
+  },
+})
+
 export const profileStats = style({
   display: 'grid',
   gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',

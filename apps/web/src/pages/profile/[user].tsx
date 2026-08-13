@@ -1,6 +1,6 @@
 import { CACHE_TIMES, SWR_KEYS } from '@buildeross/constants'
 import { PUBLIC_DEFAULT_CHAINS } from '@buildeross/constants/chains'
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { useUserDaos } from '@buildeross/hooks/useUserDaos'
 import { myDaosRequest, type ProfileDashboardChainResult } from '@buildeross/sdk/subgraph'
 import type { AddressType, CHAIN_ID, FeedItem } from '@buildeross/types'
@@ -14,6 +14,8 @@ import { useRouter } from 'next/router'
 import React from 'react'
 import { Meta } from 'src/components/Meta'
 import { DelegateToProfileButton } from 'src/components/profile/DelegateToProfileButton'
+import { FarcasterProfileIdentity } from 'src/components/profile/FarcasterProfileIdentity'
+import { IdentityPreferenceToggle } from 'src/components/profile/IdentityPreferenceToggle'
 import { ProfileActivityPanel } from 'src/components/profile/ProfileActivityPanel'
 import { ProfileDaoSelector } from 'src/components/profile/ProfileDaoSelector'
 import { ProfileIdentityFields } from 'src/components/profile/ProfileIdentityFields'
@@ -23,6 +25,10 @@ import { ProfileWalletScannerMenu } from 'src/components/profile/ProfileWalletSc
 import { useProfileIdentity } from 'src/hooks/useProfileIdentity'
 import { getProfileLayout } from 'src/layouts/ProfileLayout'
 import type { NextPageWithLayout } from 'src/pages/_app'
+import {
+  FarcasterProviderError,
+  lookupFarcasterIdentityByUsername,
+} from 'src/services/farcasterIdentity'
 import {
   profileDashboardGrid,
   profileHeaderActions,
@@ -115,7 +121,15 @@ const ProfilePage: NextPageWithLayout<ProfileProps> = ({
   ogImageURL,
 }) => {
   const router = useRouter()
-  const { ensName, ensAvatar } = useEnsData(userAddress)
+  const {
+    ensName,
+    avatar,
+    displayName,
+    identity: farcasterIdentity,
+    ambiguousIdentities,
+    isLoading: isLoadingIdentity,
+    error: farcasterError,
+  } = useIdentityData(userAddress)
   const { data: profileIdentity, mutate: mutateProfileIdentity } = useProfileIdentity(
     ensName && !isAddress(ensName, { strict: false }) ? ensName : undefined,
     userAddress as AddressType
@@ -235,8 +249,8 @@ const ProfilePage: NextPageWithLayout<ProfileProps> = ({
   const daoCount = new Set(
     daos?.map((dao) => createDaoKey(dao.chainId, dao.collectionAddress)) ?? []
   ).size
-  const displayName = ensName || userName
-  const pageTitle = `${displayName}'s Profile`
+  const resolvedDisplayName = displayName || userName
+  const pageTitle = `${resolvedDisplayName}'s Profile`
   const stats: Array<{ label: string; value: number | string; isPartial?: boolean }> = [
     {
       label: 'DAOs',
@@ -269,9 +283,9 @@ const ProfilePage: NextPageWithLayout<ProfileProps> = ({
     <>
       <Meta
         title={pageTitle}
-        type={`${displayName}:profile`}
+        type={`${resolvedDisplayName}:profile`}
         path={`/profile/${userAddress}`}
-        description={`View ${displayName}'s profile, governance activity, and DAO tokens on Nouns Builder`}
+        description={`View ${resolvedDisplayName}'s profile, governance activity, and DAO tokens on Nouns Builder`}
         image={ogImageURL}
       />
       <main className={profilePage}>
@@ -281,11 +295,11 @@ const ProfilePage: NextPageWithLayout<ProfileProps> = ({
         >
           <div className={profileHeaderMain}>
             <div className={profileHeaderIdentity}>
-              <Avatar address={userAddress} src={ensAvatar} size="90" />
+              <Avatar address={userAddress} src={avatar} size="90" />
               <Flex direction="column" gap="x3" style={{ minWidth: 0, flex: 1 }}>
                 <div className={profileHeaderNameRow}>
                   <Text as="h1" id="profile-heading" variant="heading-lg">
-                    {displayName}
+                    {resolvedDisplayName}
                   </Text>
                   <div className={profileHeaderCopyRow}>
                     <span className={profileWalletAddress} title={userAddress}>
@@ -296,9 +310,17 @@ const ProfilePage: NextPageWithLayout<ProfileProps> = ({
                   </div>
                 </div>
                 <ProfileIdentityFields identity={profileIdentity} />
+                <FarcasterProfileIdentity
+                  identity={farcasterIdentity}
+                  ambiguousIdentities={ambiguousIdentities}
+                  isLoading={isLoadingIdentity}
+                  error={farcasterError}
+                  profileAddress={userAddress as AddressType}
+                />
               </Flex>
             </div>
             <div className={profileHeaderActions}>
+              <IdentityPreferenceToggle />
               <ProfileLinksEditButton
                 identity={profileIdentity}
                 profileAddress={userAddress as AddressType}
@@ -306,7 +328,7 @@ const ProfilePage: NextPageWithLayout<ProfileProps> = ({
               />
               <DelegateToProfileButton
                 profileAddress={userAddress as AddressType}
-                profileName={displayName}
+                profileName={resolvedDisplayName}
               />
             </div>
           </div>
@@ -372,12 +394,47 @@ export const getServerSideProps: GetServerSideProps = async ({ params, res, req 
     `public, s-maxage=${maxAge}, stale-while-revalidate=${swr}`
   )
 
-  const userAddress = isAddress(user) ? user : await getEnsAddress(user)
+  let userAddress = isAddress(user) ? user : null
+  if (!userAddress) {
+    const explicitFarcaster = user.startsWith('@')
+    const username = user.trim().replace(/^@/, '').toLowerCase()
+    const [ensResult, farcasterResult] = await Promise.allSettled([
+      explicitFarcaster ? Promise.resolve(null) : getEnsAddress(user),
+      lookupFarcasterIdentityByUsername(username),
+    ])
+    const ensAddress = ensResult.status === 'fulfilled' ? ensResult.value : null
+    const farcasterAddress =
+      farcasterResult.status === 'fulfilled' ? farcasterResult.value.primaryAddress : null
+
+    if (
+      !explicitFarcaster &&
+      ensAddress &&
+      farcasterAddress &&
+      ensAddress.toLowerCase() !== farcasterAddress.toLowerCase()
+    ) {
+      return { notFound: true }
+    }
+    userAddress = explicitFarcaster ? farcasterAddress : (ensAddress ?? farcasterAddress)
+
+    if (
+      !userAddress &&
+      farcasterResult.status === 'rejected' &&
+      farcasterResult.reason instanceof FarcasterProviderError &&
+      farcasterResult.reason.code !== 'NOT_FOUND' &&
+      farcasterResult.reason.code !== 'CONFIGURATION_ERROR'
+    ) {
+      console.warn('Farcaster profile lookup unavailable:', {
+        username,
+        code: farcasterResult.reason.code,
+      })
+    }
+  }
   if (!userAddress) return { notFound: true }
 
-  const ensName = isAddress(user)
-    ? await getProfileEnsName(userAddress as AddressType)
-    : user
+  const ensName =
+    isAddress(user) || user.startsWith('@')
+      ? await getProfileEnsName(userAddress as AddressType)
+      : user
   const userName = isAddress(ensName) ? walletSnippet(userAddress) : ensName
   const daos = await getProfileDaosForOg(userAddress as AddressType)
   const sortedDaos = daos?.sort((a, b) => {

@@ -1,11 +1,11 @@
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { WalletIdentityWithPreview } from '@buildeross/ui'
 import { zeroAddress } from 'viem'
 
 import { AuctionDetail } from './AuctionDetail'
 
 export const WinningBidder = ({ owner }: { owner?: string }) => {
-  const { displayName, ensAvatar } = useEnsData(owner)
+  const { displayName, avatar } = useIdentityData(owner)
 
   return (
     <AuctionDetail title="Held by">
@@ -15,7 +15,7 @@ export const WinningBidder = ({ owner }: { owner?: string }) => {
         <WalletIdentityWithPreview
           address={owner as `0x${string}`}
           displayName={displayName}
-          avatarSrc={ensAvatar}
+          avatarSrc={avatar}
           avatarSize="24"
           mobileTapBehavior="toggle"
         />
