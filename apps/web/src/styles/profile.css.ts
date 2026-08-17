@@ -837,42 +837,82 @@ export const identityPreferenceToggle = style({
   },
 })
 
-export const farcasterIdentityCard = style({
-  display: 'grid',
-  gridTemplateColumns: 'minmax(0, 1fr)',
-  gap: '12px',
-  width: '100%',
-  maxWidth: '680px',
-  padding: '12px',
-  border: `1px solid ${color.border}`,
-  borderRadius: '8px',
-  backgroundColor: color.background2,
+export const farcasterArchLogo = style({
+  width: '16px',
+  height: '16px',
+  flexShrink: 0,
+  fill: 'currentColor',
+})
+
+export const verifiedIdentityMark = style({
+  display: 'inline-flex',
+  alignItems: 'center',
+  color: color.positive,
+})
+
+export const connectedWalletMenuRoot = style({
+  position: 'relative',
+  display: 'flex',
+  flex: 1,
+  minWidth: 0,
+})
+
+export const connectedWalletTrigger = style({
+  padding: 0,
+  border: 0,
+  backgroundColor: 'transparent',
+  color: color.text1,
+  textAlign: 'left',
+  cursor: 'pointer',
   selectors: {
-    'html[data-theme-mode="dark"] &': {
-      borderColor: vars.color.border,
-      backgroundColor: vars.color.background2,
-    },
-  },
-  '@media': {
-    '(min-width: 768px)': { gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)' },
+    '&:hover': { textDecoration: 'underline' },
+    '&:focus-visible': { outline: `3px solid ${color.positive}`, outlineOffset: '2px' },
+    'html[data-theme-mode="dark"] &': { color: vars.color.text1 },
   },
 })
 
-export const connectedWalletList = style({
+export const connectedWalletMenu = style({
+  position: 'absolute',
+  top: '100%',
+  left: 0,
+  zIndex: 100,
+  width: 'min(360px, calc(100vw - 32px))',
+  padding: '12px',
+  border: `1px solid ${color.border}`,
+  borderRadius: '8px',
+  backgroundColor: color.background1,
+  boxShadow: '0 18px 44px rgba(0, 0, 0, 0.18)',
+  selectors: {
+    'html[data-theme-mode="dark"] &': {
+      backgroundColor: vars.color.background1,
+      borderColor: vars.color.border,
+    },
+  },
+})
+
+export const connectedWalletMenuList = style({
   display: 'flex',
   flexDirection: 'column',
-  gap: '6px',
-  margin: 0,
+  gap: '4px',
+  margin: '8px 0 0',
   padding: 0,
   listStyle: 'none',
 })
 
-export const connectedWalletLink = style({
+export const connectedWalletMenuItem = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '4px',
+})
+
+export const connectedWalletAddress = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
   gap: '8px',
-  padding: '7px 8px',
+  flex: 1,
+  minWidth: 0,
+  padding: '8px',
   borderRadius: '6px',
   color: color.text1,
   textDecoration: 'none',
@@ -882,6 +922,59 @@ export const connectedWalletLink = style({
     'html[data-theme-mode="dark"] &': { color: vars.color.text1 },
     'html[data-theme-mode="dark"] &:hover': { backgroundColor: vars.color.neutralHover },
   },
+})
+
+export const connectedWalletBadge = style({
+  marginLeft: '4px',
+  color: color.text3,
+  fontSize: '11px',
+  selectors: {
+    'html[data-theme-mode="dark"] &': { color: vars.color.text3 },
+  },
+})
+
+export const connectedWalletExternalLink = style({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '32px',
+  height: '32px',
+  flexShrink: 0,
+  borderRadius: '6px',
+  color: color.text2,
+  selectors: {
+    '&:hover': { backgroundColor: color.neutralHover, color: color.text1 },
+    '&:focus-visible': { outline: `3px solid ${color.positive}`, outlineOffset: '2px' },
+    'html[data-theme-mode="dark"] &': { color: vars.color.text2 },
+    'html[data-theme-mode="dark"] &:hover': {
+      backgroundColor: vars.color.neutralHover,
+      color: vars.color.text1,
+    },
+  },
+})
+
+export const profileSettingsDialog = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '20px',
+  width: '100%',
+  selectors: {
+    '&:focus': { outline: 'none' },
+  },
+})
+
+export const profileSettingsHeader = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: '16px',
+})
+
+export const profileSettingsSection = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '12px',
+  width: '100%',
 })
 
 export const profileStats = style({

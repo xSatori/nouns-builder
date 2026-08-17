@@ -2,6 +2,15 @@ import { render, screen } from '@testing-library/react'
 
 import { ProfileIdentityFields } from './ProfileIdentityFields'
 
+const verifiedFarcasterIdentity = {
+  fid: 1,
+  username: 'official-builder',
+  displayName: 'Official Builder',
+  primaryAddress: '0x0000000000000000000000000000000000000001' as const,
+  connectedAddresses: ['0x0000000000000000000000000000000000000001'] as const,
+  profileUrl: 'https://warpcast.com/official-builder',
+}
+
 describe('ProfileIdentityFields', () => {
   it('renders only supported identity URLs and places links before the bio', () => {
     render(
@@ -39,5 +48,27 @@ describe('ProfileIdentityFields', () => {
     const { container } = render(<ProfileIdentityFields identity={{}} />)
 
     expect(container).toBeEmptyDOMElement()
+  })
+
+  it('uses the provider-verified Farcaster account instead of the EAS-authored link', () => {
+    render(
+      <ProfileIdentityFields
+        identity={{
+          farcaster: {
+            handle: 'eas-builder',
+            url: 'https://warpcast.com/eas-builder',
+            label: '@eas-builder',
+          },
+        }}
+        verifiedFarcasterIdentity={verifiedFarcasterIdentity}
+      />
+    )
+
+    expect(
+      screen.getByRole('link', { name: 'Open @official-builder on Farcaster (verified)' })
+    ).toHaveAttribute('href', 'https://farcaster.xyz/official-builder')
+    expect(screen.queryByText('@eas-builder')).not.toBeInTheDocument()
+    expect(screen.getByTestId('farcaster-arch-logo')).toBeInTheDocument()
+    expect(screen.getByLabelText('Verified Farcaster account')).toBeInTheDocument()
   })
 })

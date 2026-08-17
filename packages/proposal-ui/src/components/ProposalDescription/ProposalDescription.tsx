@@ -4,7 +4,7 @@ import {
   ZORA_COIN_FACTORY_ADDRESS,
 } from '@buildeross/constants/addresses'
 import { useDecodedTransactions } from '@buildeross/hooks/useDecodedTransactions'
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { Proposal } from '@buildeross/sdk/subgraph'
 import { useChainStore, useDaoStore } from '@buildeross/stores'
 import {
@@ -73,9 +73,9 @@ export const ProposalDescription: React.FC<ProposalDescriptionProps> = ({
 }) => {
   const proposalMetadata = (proposal as Proposal & { metadata?: string | null }).metadata
 
-  const { displayName, ensAvatar } = useEnsData(proposal.proposer)
+  const { displayName, ensAvatar } = useIdentityData(proposal.proposer)
   const { displayName: representedDisplayName, ensAvatar: representedEnsAvatar } =
-    useEnsData(proposal.representedAddress || undefined)
+    useIdentityData(proposal.representedAddress || undefined)
   const { chain } = useChainStore()
   const { addresses } = useDaoStore()
   const safeDiscussionUrl = getSafeDiscussionUrl(proposal.discussionUrl)

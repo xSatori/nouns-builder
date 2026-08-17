@@ -1,5 +1,5 @@
 import { ERC721_REDEEM_MINTER, MERKLE_RESERVE_MINTER } from '@buildeross/constants'
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { tokenAbi } from '@buildeross/sdk/contract'
 import { useChainStore, useDaoStore } from '@buildeross/stores'
 import { AddressType } from '@buildeross/types'
@@ -46,9 +46,9 @@ const MinterCard: React.FC<MinterCardProps> = ({
   hasChanges = false,
   onRemove,
 }) => {
-  const { ensName } = useEnsData(address)
+  const { displayName } = useIdentityData(address)
   const truncatedAddress = `${address.slice(0, 6)}...${address.slice(-4)}`
-  const displayAddress = ensName || truncatedAddress
+  const displayAddress = displayName || truncatedAddress
   const checkboxId = `minter-${address}-checkbox`
 
   return (
@@ -93,7 +93,7 @@ const MinterCard: React.FC<MinterCardProps> = ({
             color="text4"
             fontSize={12}
             fontFamily="mono"
-            title={ensName ? `${ensName} (${address})` : address}
+            title={displayName ? `${displayName} (${address})` : address}
             style={{ cursor: 'pointer' }}
           >
             {displayAddress}

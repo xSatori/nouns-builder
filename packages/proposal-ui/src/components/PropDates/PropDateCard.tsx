@@ -1,4 +1,4 @@
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { type PropDate } from '@buildeross/sdk/subgraph'
 import { WalletIdentityWithPreview } from '@buildeross/ui'
 import { MarkdownDisplay } from '@buildeross/ui/MarkdownDisplay'
@@ -24,7 +24,7 @@ export const PropDateCard = ({
   replies?: PropDate[]
   invoiceData?: InvoiceMetadata
 }) => {
-  const { ensName, ensAvatar } = useEnsData(propDate?.creator)
+  const { displayName, avatar } = useIdentityData(propDate?.creator)
 
   const milestoneTitle = useMemo(
     () =>
@@ -59,8 +59,8 @@ export const PropDateCard = ({
           <Box style={{ minWidth: 0 }}>
             <WalletIdentityWithPreview
               address={propDate.creator as `0x${string}`}
-              displayName={ensName || walletSnippet(propDate.creator)}
-              avatarSrc={ensAvatar}
+              displayName={displayName || walletSnippet(propDate.creator)}
+              avatarSrc={avatar}
               avatarSize="28"
               mobileTapBehavior="toggle"
             />

@@ -2,7 +2,7 @@ import {
   PUBLIC_BUILDER_ADDRESS,
   PUBLIC_NOUNS_ADDRESS,
 } from '@buildeross/constants/addresses'
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { useChainStore } from '@buildeross/stores'
 import { AnimatedModal } from '@buildeross/ui/Modal'
 import { getEnsAddress } from '@buildeross/utils/ens'
@@ -29,8 +29,10 @@ export const ContributionAllocation = () => {
   const chain = useChainStore((x) => x.chain)
   const chainId = chain.id as ContributionChain
 
-  const { displayName: builderDisplayName } = useEnsData(PUBLIC_BUILDER_ADDRESS[chainId])
-  const { displayName: nounsDisplayName } = useEnsData(PUBLIC_NOUNS_ADDRESS[chainId])
+  const { displayName: builderDisplayName } = useIdentityData(
+    PUBLIC_BUILDER_ADDRESS[chainId]
+  )
+  const { displayName: nounsDisplayName } = useIdentityData(PUBLIC_NOUNS_ADDRESS[chainId])
 
   const builderAllocationValue = contributionAllocation.find(
     (allocation) => allocation.founderAddress === PUBLIC_BUILDER_ADDRESS[chainId]

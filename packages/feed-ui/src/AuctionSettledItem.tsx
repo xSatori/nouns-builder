@@ -1,4 +1,4 @@
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import type { AuctionSettledFeedItem } from '@buildeross/types'
 import { FallbackImage } from '@buildeross/ui/FallbackImage'
 import { useLinks } from '@buildeross/ui/LinksProvider'
@@ -17,7 +17,7 @@ interface AuctionSettledItemProps {
 
 export const AuctionSettledItem: React.FC<AuctionSettledItemProps> = ({ item }) => {
   const { getAuctionLink } = useLinks()
-  const { displayName } = useEnsData(item.winner)
+  const { displayName } = useIdentityData(item.winner)
 
   const formattedAmount =
     BigInt(item.amount) > 0n ? formatCryptoVal(formatEther(BigInt(item.amount))) : null

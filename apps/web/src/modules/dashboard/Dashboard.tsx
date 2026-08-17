@@ -3,7 +3,7 @@ import { Feed, UrgencyAlerts } from '@buildeross/feed-ui'
 import {
   type DashboardDaoWithState,
   useDashboardData,
-  useEnsData,
+  useIdentityData,
 } from '@buildeross/hooks'
 import { ProposalState } from '@buildeross/sdk/contract'
 import { AddressType } from '@buildeross/types'
@@ -27,7 +27,7 @@ export type DashboardDaoProps = DashboardDaoWithState
 
 export const Dashboard: React.FC = () => {
   const { address } = useAccount()
-  const { displayName, ensAvatar } = useEnsData(address)
+  const { displayName, avatar } = useIdentityData(address)
   const [openAccordion, setOpenAccordion] = React.useState<'daos' | 'proposals' | null>(
     null
   )
@@ -187,7 +187,7 @@ export const Dashboard: React.FC = () => {
               address={address}
               daoCount={-1}
               ensName={displayName}
-              ensAvatar={ensAvatar}
+              ensAvatar={avatar}
             />
             <CreateActions userAddress={address} />
           </>
@@ -217,7 +217,7 @@ export const Dashboard: React.FC = () => {
               address={address}
               daoCount={-1}
               ensName={displayName}
-              ensAvatar={ensAvatar}
+              ensAvatar={avatar}
             />
             <CreateActions userAddress={address} />
           </>
@@ -262,7 +262,7 @@ export const Dashboard: React.FC = () => {
           address={address}
           daoCount={0}
           ensName={displayName}
-          ensAvatar={ensAvatar}
+          ensAvatar={avatar}
         />
         <CreateActions userAddress={address} />
         <AccordionItem
@@ -286,7 +286,7 @@ export const Dashboard: React.FC = () => {
           address={address}
           daoCount={sortedDaos.length}
           ensName={displayName}
-          ensAvatar={ensAvatar}
+          ensAvatar={avatar}
         />
         <CreateActions userAddress={address} />
 
@@ -340,7 +340,7 @@ export const Dashboard: React.FC = () => {
       mainContent={mainContent}
       sidebarContent={sidebarContent}
       address={address}
-      ensAvatar={ensAvatar}
+      ensAvatar={avatar}
     />
   )
 }

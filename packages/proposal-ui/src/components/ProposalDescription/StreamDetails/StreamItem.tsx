@@ -1,6 +1,6 @@
 import { BASE_URL } from '@buildeross/constants/baseUrl'
-import { useEnsData } from '@buildeross/hooks/useEnsData'
 import { useEthUsdPrice } from '@buildeross/hooks/useEthUsdPrice'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { useIsGnosisSafe } from '@buildeross/hooks/useIsGnosisSafe'
 import { useVotes } from '@buildeross/hooks/useVotes'
 import { useChainStore, useDaoStore, useProposalStore } from '@buildeross/stores'
@@ -91,7 +91,7 @@ export const StreamItem = ({
     collectionAddress: addresses.token,
   })
 
-  const { displayName: recipientName, ensAvatar: recipientAvatar } = useEnsData(
+  const { displayName: recipientName, avatar: recipientAvatar } = useIdentityData(
     stream.recipient
   )
 

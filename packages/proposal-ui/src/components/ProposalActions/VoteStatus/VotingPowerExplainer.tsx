@@ -1,5 +1,5 @@
 import { useDaoMembership } from '@buildeross/hooks/useDaoMembership'
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { useVotes } from '@buildeross/hooks/useVotes'
 import { useChainStore, useDaoStore } from '@buildeross/stores'
 import { handleGMTOffset } from '@buildeross/utils/helpers'
@@ -43,7 +43,7 @@ export const VotingPowerExplainer: React.FC<VotingPowerExplainerProps> = ({
     signerAddress: userAddress,
   })
 
-  const delegateEns = useEnsData(isDelegating ? delegatedTo : undefined)
+  const delegateIdentity = useIdentityData(isDelegating ? delegatedTo : undefined)
 
   const { tokenCount, delegatedVotes } = useMemo(() => {
     const tokenCount = membership?.tokenCount ?? 0
@@ -82,7 +82,7 @@ export const VotingPowerExplainer: React.FC<VotingPowerExplainerProps> = ({
       currentVotes={Number(currentVotes)}
       tokenCount={tokenCount}
       delegatedVotes={delegatedVotes}
-      delegateDisplayName={delegateEns.displayName}
+      delegateDisplayName={delegateIdentity.displayName}
       snapshotDateLabel={snapshotDateLabel}
     />
   )

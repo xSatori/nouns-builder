@@ -1,6 +1,6 @@
 import { PUBLIC_DEFAULT_CHAINS } from '@buildeross/constants/chains'
 import { MOBILE_PROFILE_MENU_LAYER, NAV_BUTTON_LAYER } from '@buildeross/constants/layers'
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { useUserDaos } from '@buildeross/hooks/useUserDaos'
 import { useWalletDisconnect } from '@buildeross/hooks/useWalletDisconnect'
 import { useChainStore } from '@buildeross/stores'
@@ -132,7 +132,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
 }) => {
   const { address } = useAccount()
   const { chain: selectedChain } = useChainStore()
-  const { displayName, ensAvatar } = useEnsData(address || '')
+  const { displayName, avatar } = useIdentityData(address || '')
   const { data: balance } = useBalance({
     address: address!,
     chainId: selectedChain.id,
@@ -238,7 +238,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
               className={profileRow}
               aria-label="Open profile"
             >
-              <Avatar address={address!} src={ensAvatar} size={'40'} />
+              <Avatar address={address!} src={avatar} size={'40'} />
               <Flex direction={'column'} ml={'x2'}>
                 <Text fontWeight={'display'}>{displayName}</Text>
                 <Text variant={'paragraph-md'} color={'tertiary'}>
@@ -483,7 +483,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
           <Icon id="cross" />
         </Flex>
       ) : (
-        <Avatar address={address} src={ensAvatar} size={'40'} />
+        <Avatar address={address} src={avatar} size={'40'} />
       )}
     </Flex>
   ) : (

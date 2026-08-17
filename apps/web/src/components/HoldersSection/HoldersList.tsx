@@ -1,5 +1,5 @@
 import { ETHERSCAN_BASE_URL } from '@buildeross/constants/etherscan'
-import { useEnsData } from '@buildeross/hooks'
+import { useIdentityData } from '@buildeross/hooks'
 import { useChainStore } from '@buildeross/stores'
 import { WalletIdentityWithPreview } from '@buildeross/ui'
 import { formatCryptoVal } from '@buildeross/utils'
@@ -53,7 +53,7 @@ interface HolderItemProps {
 }
 
 const HolderItem = ({ address, balance, isDrop = false }: HolderItemProps) => {
-  const { displayName, ensAvatar } = useEnsData(address)
+  const { displayName, avatar } = useIdentityData(address)
   const chain = useChainStore((c) => c.chain)
   const chainId = chain.id
 
@@ -70,7 +70,7 @@ const HolderItem = ({ address, balance, isDrop = false }: HolderItemProps) => {
       <WalletIdentityWithPreview
         address={address}
         displayName={displayName}
-        avatarSrc={ensAvatar}
+        avatarSrc={avatar}
         avatarSize="32"
         nameVariant="paragraph-sm"
         mobileTapBehavior="toggle"

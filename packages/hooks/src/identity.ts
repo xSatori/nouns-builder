@@ -23,6 +23,9 @@ export type PreferredIdentity = {
   source: 'ens' | 'farcaster' | 'address'
 }
 
+const getFarcasterDisplayName = (identity: FarcasterIdentity) =>
+  identity.displayName?.trim() || `@${identity.username}`
+
 export type IdentityResolution =
   | {
       status: 'resolved'
@@ -65,7 +68,7 @@ export const selectPreferredIdentity = ({
 }): PreferredIdentity => {
   if (preferFarcaster && farcaster) {
     return {
-      displayName: `@${farcaster.username}`,
+      displayName: getFarcasterDisplayName(farcaster),
       avatarUrl: farcaster.pfpUrl,
       source: 'farcaster',
     }
@@ -73,7 +76,7 @@ export const selectPreferredIdentity = ({
   if (ensName) return { displayName: ensName, source: 'ens' }
   if (farcaster) {
     return {
-      displayName: `@${farcaster.username}`,
+      displayName: getFarcasterDisplayName(farcaster),
       avatarUrl: farcaster.pfpUrl,
       source: 'farcaster',
     }

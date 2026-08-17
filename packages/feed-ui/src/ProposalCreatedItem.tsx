@@ -1,4 +1,4 @@
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import type { ProposalCreatedFeedItem } from '@buildeross/types'
 import { useLinks } from '@buildeross/ui/LinksProvider'
 import { LinkWrapper } from '@buildeross/ui/LinkWrapper'
@@ -19,7 +19,7 @@ interface ProposalCreatedItemProps {
 
 export const ProposalCreatedItem: React.FC<ProposalCreatedItemProps> = ({ item }) => {
   const { getProposalLink } = useLinks()
-  const { displayName } = useEnsData(item.proposer)
+  const { displayName } = useIdentityData(item.proposer)
 
   const description = item.proposalDescription?.trim()
 

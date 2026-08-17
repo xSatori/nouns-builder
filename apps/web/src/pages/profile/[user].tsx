@@ -14,12 +14,11 @@ import { useRouter } from 'next/router'
 import React from 'react'
 import { Meta } from 'src/components/Meta'
 import { DelegateToProfileButton } from 'src/components/profile/DelegateToProfileButton'
-import { FarcasterProfileIdentity } from 'src/components/profile/FarcasterProfileIdentity'
-import { IdentityPreferenceToggle } from 'src/components/profile/IdentityPreferenceToggle'
 import { ProfileActivityPanel } from 'src/components/profile/ProfileActivityPanel'
+import { ProfileConnectedWalletsMenu } from 'src/components/profile/ProfileConnectedWalletsMenu'
 import { ProfileDaoSelector } from 'src/components/profile/ProfileDaoSelector'
 import { ProfileIdentityFields } from 'src/components/profile/ProfileIdentityFields'
-import { ProfileLinksEditButton } from 'src/components/profile/ProfileLinksEditButton'
+import { ProfileSettingsButton } from 'src/components/profile/ProfileSettingsButton'
 import { ProfileTokenGallery } from 'src/components/profile/ProfileTokenGallery'
 import { ProfileWalletScannerMenu } from 'src/components/profile/ProfileWalletScannerMenu'
 import { useProfileIdentity } from 'src/hooks/useProfileIdentity'
@@ -42,7 +41,6 @@ import {
   profileStats,
   profileStatValue,
   profileSurface,
-  profileWalletAddress,
 } from 'src/styles/profile.css'
 import {
   createDaoKey,
@@ -126,9 +124,6 @@ const ProfilePage: NextPageWithLayout<ProfileProps> = ({
     avatar,
     displayName,
     identity: farcasterIdentity,
-    ambiguousIdentities,
-    isLoading: isLoadingIdentity,
-    error: farcasterError,
   } = useIdentityData(userAddress)
   const { data: profileIdentity, mutate: mutateProfileIdentity } = useProfileIdentity(
     ensName && !isAddress(ensName, { strict: false }) ? ensName : undefined,
@@ -302,26 +297,22 @@ const ProfilePage: NextPageWithLayout<ProfileProps> = ({
                     {resolvedDisplayName}
                   </Text>
                   <div className={profileHeaderCopyRow}>
-                    <span className={profileWalletAddress} title={userAddress}>
-                      {userAddress}
-                    </span>
+                    <ProfileConnectedWalletsMenu
+                      profileAddress={userAddress as AddressType}
+                      identity={farcasterIdentity}
+                    />
                     <CopyButton text={userAddress} />
                     <ProfileWalletScannerMenu address={userAddress as AddressType} />
                   </div>
                 </div>
-                <ProfileIdentityFields identity={profileIdentity} />
-                <FarcasterProfileIdentity
-                  identity={farcasterIdentity}
-                  ambiguousIdentities={ambiguousIdentities}
-                  isLoading={isLoadingIdentity}
-                  error={farcasterError}
-                  profileAddress={userAddress as AddressType}
+                <ProfileIdentityFields
+                  identity={profileIdentity}
+                  verifiedFarcasterIdentity={farcasterIdentity}
                 />
               </Flex>
             </div>
             <div className={profileHeaderActions}>
-              <IdentityPreferenceToggle />
-              <ProfileLinksEditButton
+              <ProfileSettingsButton
                 identity={profileIdentity}
                 profileAddress={userAddress as AddressType}
                 onSaved={() => mutateProfileIdentity()}

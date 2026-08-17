@@ -1,4 +1,4 @@
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { DaoVoter } from '@buildeross/sdk/subgraph'
 import { Avatar } from '@buildeross/ui/Avatar'
 import { useLinks } from '@buildeross/ui/LinksProvider'
@@ -24,7 +24,7 @@ export const MemberCard = ({
   treasuryAddress?: string
 }) => {
   const { getProfileLink } = useLinks()
-  const { displayName, ensAvatar } = useEnsData(member.voter)
+  const { displayName, avatar } = useIdentityData(member.voter)
 
   const timeJoined = useMemo(
     () => dayjs(dayjs.unix(member.timeJoined)).format('MMM DD, YYYY'),
@@ -57,7 +57,7 @@ export const MemberCard = ({
         align={'center'}
         mb={{ '@initial': 'x4', '@768': 'x0' }}
       >
-        <Avatar address={member.voter} src={ensAvatar} size="32" />
+        <Avatar address={member.voter} src={avatar} size="32" />
         <Text mx="x2" variant="paragraph-md">
           {displayName}
         </Text>

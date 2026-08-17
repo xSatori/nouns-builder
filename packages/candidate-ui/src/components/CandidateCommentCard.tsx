@@ -1,4 +1,4 @@
-import { useEnsData } from '@buildeross/hooks'
+import { useIdentityData } from '@buildeross/hooks'
 import { type CandidateComment } from '@buildeross/sdk'
 import { CandidateVoteSupport } from '@buildeross/sdk/subgraph'
 import { WalletIdentityWithPreview } from '@buildeross/ui'
@@ -32,7 +32,7 @@ export const CandidateCommentCard: React.FC<CandidateCommentCardProps> = ({
   isReplying = false,
   onReplyClick,
 }) => {
-  const { ensName, ensAvatar } = useEnsData(comment.commenter as `0x${string}`)
+  const { displayName, avatar } = useIdentityData(comment.commenter as `0x${string}`)
   const support = candidateSupportMeta[comment.support]
 
   return (
@@ -61,8 +61,10 @@ export const CandidateCommentCard: React.FC<CandidateCommentCardProps> = ({
           <Box style={{ minWidth: 0 }}>
             <WalletIdentityWithPreview
               address={comment.commenter as `0x${string}`}
-              displayName={ensName || walletSnippet(comment.commenter as `0x${string}`)}
-              avatarSrc={ensAvatar}
+              displayName={
+                displayName || walletSnippet(comment.commenter as `0x${string}`)
+              }
+              avatarSrc={avatar}
               avatarSize="24"
               mobileTapBehavior="toggle"
             />

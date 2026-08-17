@@ -6,11 +6,11 @@ import {
 import type { AddressType, CHAIN_ID } from '@buildeross/types'
 import useSWR, { KeyedMutator } from 'swr'
 
-import { type EnsData, useEnsData } from './useEnsData'
+import { useIdentityData } from './useIdentityData'
 
 export type DaoMembership = Omit<DaoMembershipResponse, 'member' | 'delegate'> & {
-  member: EnsData
-  delegate: EnsData
+  member: ReturnType<typeof useIdentityData>
+  delegate: ReturnType<typeof useIdentityData>
   voteDescription: string
 }
 
@@ -81,8 +81,8 @@ export const useDaoMembership = ({
     }
   )
 
-  const memberData = useEnsData(data?.member)
-  const delegateData = useEnsData(data?.delegate)
+  const memberData = useIdentityData(data?.member)
+  const delegateData = useIdentityData(data?.delegate)
   const voteDescription =
     !!data && !!delegateData.displayName
       ? describeVotePower(data, delegateData.displayName)

@@ -1,4 +1,4 @@
-import { useEnsData, useVotes } from '@buildeross/hooks'
+import { useIdentityData, useVotes } from '@buildeross/hooks'
 import { governorAbi } from '@buildeross/sdk/contract'
 import type { CandidateSponsorSignature } from '@buildeross/sdk/subgraph'
 import { getCandidateSponsorSignatures } from '@buildeross/sdk/subgraph'
@@ -231,7 +231,7 @@ export function compareProposerSignaturesBySigner(
 }
 
 function SignerRow({ signature }: { signature: CandidateSponsorSignature }) {
-  const { displayName, ensAvatar } = useEnsData(signature.signer as string)
+  const { displayName, avatar } = useIdentityData(signature.signer as string)
   const expired = isSignatureExpired(signature.deadline)
 
   return (
@@ -244,7 +244,7 @@ function SignerRow({ signature }: { signature: CandidateSponsorSignature }) {
       <WalletIdentityWithPreview
         address={signature.signer as `0x${string}`}
         displayName={displayName}
-        avatarSrc={ensAvatar}
+        avatarSrc={avatar}
       />
       <Flex align="center" gap="x2">
         <Text color="text3">{signature.voteWeight.toString()} votes</Text>

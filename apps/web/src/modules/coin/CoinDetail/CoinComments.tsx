@@ -1,4 +1,4 @@
-import { useEnsData, useZoraCoinComments } from '@buildeross/hooks'
+import { useIdentityData, useZoraCoinComments } from '@buildeross/hooks'
 import { WalletIdentityWithPreview } from '@buildeross/ui'
 import { formatTimeAgo } from '@buildeross/utils/formatTime'
 import { walletSnippet } from '@buildeross/utils/helpers'
@@ -36,13 +36,13 @@ const CommentCard: React.FC<{
     }
   }
 }> = ({ comment, timestamp, userAddress, userProfile }) => {
-  const { displayName, ensAvatar } = useEnsData(userAddress as Address)
+  const { displayName, avatar } = useIdentityData(userAddress as Address)
 
   const timeAgo = formatTimeAgo(timestamp)
   const author =
     userProfile?.handle || displayName || walletSnippet(userAddress as Address)
-  // Prefer Zora avatar, fallback to ENS avatar
-  const avatarSrc = userProfile?.avatar?.previewImage?.small || ensAvatar
+  // Prefer Zora avatar, fallback to the preferred wallet identity avatar.
+  const avatarSrc = userProfile?.avatar?.previewImage?.small || avatar
 
   return (
     <Box className={commentCard}>

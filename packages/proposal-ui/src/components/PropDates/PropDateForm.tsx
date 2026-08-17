@@ -4,7 +4,7 @@ import {
   easAbi,
   PROPDATE_SCHEMA_UID,
 } from '@buildeross/constants/eas'
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { awaitSubgraphSync, MessageType } from '@buildeross/sdk/subgraph'
 import { useChainStore, useDaoStore } from '@buildeross/stores'
 import { CHAIN_ID, RequiredDaoContractAddresses } from '@buildeross/types'
@@ -99,7 +99,7 @@ export const PropDateForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isTxSuccess, setIsTxSuccess] = useState(false)
 
-  const { ensName: replyToEnsName, ensAvatar: replyToEnsAvatar } = useEnsData(
+  const { displayName: replyToDisplayName, avatar: replyToAvatar } = useIdentityData(
     replyTo?.creator
   )
 
@@ -234,8 +234,8 @@ export const PropDateForm = ({
                   <ReplyTo
                     creator={replyTo.creator}
                     message={replyTo.message}
-                    ensName={replyToEnsName}
-                    ensAvatar={replyToEnsAvatar}
+                    ensName={replyToDisplayName}
+                    ensAvatar={replyToAvatar}
                   />
                 </Box>
               )}

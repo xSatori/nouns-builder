@@ -14,6 +14,7 @@ interface WalletProfilePreviewProps {
   address: `0x${string}`
   children: React.ReactNode
   displayName?: string
+  secondaryName?: string
   avatarSrc?: string | null
   inline?: boolean
   mobileTapBehavior?: 'passthrough' | 'toggle'
@@ -82,6 +83,7 @@ export const WalletProfilePreview = ({
   address,
   children,
   displayName,
+  secondaryName,
   avatarSrc,
   inline = false,
   mobileTapBehavior = 'passthrough',
@@ -270,7 +272,7 @@ export const WalletProfilePreview = ({
                 {resolvedName}
               </Text>
               <Text variant="label-sm" color="text3" style={{ whiteSpace: 'nowrap' }}>
-                {compactAddress(address)}
+                {secondaryName || compactAddress(address)}
               </Text>
             </Box>
           </Link>

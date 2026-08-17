@@ -2,7 +2,7 @@ import {
   PUBLIC_BUILDER_ADDRESS,
   PUBLIC_NOUNS_ADDRESS,
 } from '@buildeross/constants/addresses'
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { useChainStore } from '@buildeross/stores'
 import { DatePicker, SmartInput, Toggle } from '@buildeross/ui'
 import { yearsAhead } from '@buildeross/utils/helpers'
@@ -30,8 +30,10 @@ export const ContributionAllocationForm: React.FC<ContributionAllocationFormProp
 }) => {
   const chain = useChainStore((x) => x.chain)
   const chainId = chain.id as ContributionChain
-  const { displayName: builderDisplayName } = useEnsData(PUBLIC_BUILDER_ADDRESS[chainId])
-  const { displayName: nounsDisplayName } = useEnsData(PUBLIC_NOUNS_ADDRESS[chainId])
+  const { displayName: builderDisplayName } = useIdentityData(
+    PUBLIC_BUILDER_ADDRESS[chainId]
+  )
+  const { displayName: nounsDisplayName } = useIdentityData(PUBLIC_NOUNS_ADDRESS[chainId])
 
   return (
     <Formik<ContributionAllocationFormValues>

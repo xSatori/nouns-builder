@@ -1,4 +1,4 @@
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { usePropdateMessage } from '@buildeross/hooks/usePropdateMessage'
 import type { ProposalUpdatePostedFeedItem } from '@buildeross/types'
 import { useLinks } from '@buildeross/ui/LinksProvider'
@@ -20,7 +20,7 @@ interface ProposalUpdatedItemProps {
 
 export const ProposalUpdatedItem: React.FC<ProposalUpdatedItemProps> = ({ item }) => {
   const { getProposalLink } = useLinks()
-  const { displayName } = useEnsData(item.actor)
+  const { displayName } = useIdentityData(item.actor)
   const { parsedContent, isLoading } = usePropdateMessage(item.messageType, item.message)
 
   const displayContent = isLoading ? '' : parsedContent

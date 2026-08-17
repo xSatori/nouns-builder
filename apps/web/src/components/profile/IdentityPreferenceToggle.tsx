@@ -9,6 +9,7 @@ export const IdentityPreferenceToggle = () => {
     <label className={identityPreferenceToggle}>
       <input
         type="checkbox"
+        aria-label="Prefer Farcaster names"
         checked={preferFarcaster}
         onChange={(event) => setPreferFarcaster(event.target.checked)}
       />

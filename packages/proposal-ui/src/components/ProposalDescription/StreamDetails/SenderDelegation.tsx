@@ -1,5 +1,5 @@
 import { ETHERSCAN_BASE_URL } from '@buildeross/constants/etherscan'
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { useIsGnosisSafe } from '@buildeross/hooks/useIsGnosisSafe'
 import { CHAIN_ID } from '@buildeross/types'
 import { createSafeAppUrl, createSafeUrl } from '@buildeross/utils/safe'
@@ -18,7 +18,7 @@ export const SenderDelegation = ({
   senderAddress,
   proposalUrl,
 }: SenderDelegationProps) => {
-  const { displayName: senderDisplayName } = useEnsData(senderAddress)
+  const { displayName: senderDisplayName } = useIdentityData(senderAddress)
 
   const { isGnosisSafe: isSenderAGnosisSafe } = useIsGnosisSafe(senderAddress, chainId)
 

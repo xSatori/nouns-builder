@@ -51,20 +51,32 @@ describe('identity helpers', () => {
         farcaster: farcasterIdentity,
         preferFarcaster: true,
       })
-    ).toMatchObject({ displayName: '@builder', source: 'farcaster' })
+    ).toMatchObject({ displayName: 'Builder', source: 'farcaster' })
   })
 
   it('falls back from ENS to Farcaster to the shortened address', () => {
-    expect(
-      selectPreferredIdentity({
-        address,
-        farcaster: farcasterIdentity,
-        preferFarcaster: false,
-      }).source
-    ).toBe('farcaster')
+    const preferredFarcaster = selectPreferredIdentity({
+      address,
+      farcaster: farcasterIdentity,
+      preferFarcaster: false,
+    })
+    expect(preferredFarcaster).toMatchObject({
+      displayName: 'Builder',
+      source: 'farcaster',
+    })
     expect(selectPreferredIdentity({ address, preferFarcaster: false }).source).toBe(
       'address'
     )
+  })
+
+  it('falls back to @username when the Farcaster display name is empty', () => {
+    expect(
+      selectPreferredIdentity({
+        address,
+        farcaster: { ...farcasterIdentity, displayName: '   ' },
+        preferFarcaster: true,
+      })
+    ).toMatchObject({ displayName: '@builder', source: 'farcaster' })
   })
 })
 

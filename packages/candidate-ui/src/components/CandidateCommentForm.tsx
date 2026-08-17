@@ -1,4 +1,4 @@
-import { useEnsData } from '@buildeross/hooks'
+import { useIdentityData } from '@buildeross/hooks'
 import {
   attestCandidateComment,
   attestCommentWithSignature,
@@ -81,7 +81,7 @@ export const CandidateCommentForm: React.FC<CandidateCommentFormProps> = ({
   const { address } = useAccount()
   const { chain } = useChainStore()
   const { addresses } = useDaoStore()
-  const { ensName: replyToEnsName, ensAvatar: replyToEnsAvatar } = useEnsData(
+  const { displayName: replyToDisplayName, avatar: replyToAvatar } = useIdentityData(
     replyTo?.commenter
   )
   const { data: nonce, isLoading: isNonceLoading } = useReadContract({
@@ -282,8 +282,8 @@ export const CandidateCommentForm: React.FC<CandidateCommentFormProps> = ({
           >
             <WalletIdentity
               address={replyTo.commenter as `0x${string}`}
-              displayName={replyToEnsName || walletSnippet(replyTo.commenter)}
-              avatarSrc={replyToEnsAvatar || undefined}
+              displayName={replyToDisplayName || walletSnippet(replyTo.commenter)}
+              avatarSrc={replyToAvatar || undefined}
               avatarSize="16"
               nameVariant="label-sm"
               nameWeight="label"

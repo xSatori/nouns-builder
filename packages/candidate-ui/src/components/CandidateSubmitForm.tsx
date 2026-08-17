@@ -1,6 +1,6 @@
 import { MobileProposalActionBar } from '@buildeross/create-proposal-ui'
 import { decodeTransactions } from '@buildeross/hooks'
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import {
   BundledDecodedTransactions,
   ProposalContentCard,
@@ -37,7 +37,7 @@ export const CandidateSubmitForm: React.FC<CandidateSubmitFormProps> = ({
 }) => {
   const config = useConfig()
   const { address } = useAccount()
-  const { displayName, ensAvatar } = useEnsData(address)
+  const { displayName, avatar } = useIdentityData(address)
   const { chain } = useChainStore()
   const { addresses } = useDaoStore()
   const { clearCandidate } = useCandidateStore()
@@ -283,7 +283,7 @@ export const CandidateSubmitForm: React.FC<CandidateSubmitFormProps> = ({
                     <WalletIdentityWithPreview
                       address={address}
                       displayName={displayName}
-                      avatarSrc={ensAvatar}
+                      avatarSrc={avatar}
                       avatarSize="20"
                       nameVariant="paragraph-sm"
                       mobileTapBehavior="toggle"

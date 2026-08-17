@@ -1,5 +1,9 @@
 import { BASE_URL } from '@buildeross/constants/baseUrl'
-import { useEnsData, useMediaType, useProposalByExecutionTx } from '@buildeross/hooks'
+import {
+  useIdentityData,
+  useMediaType,
+  useProposalByExecutionTx,
+} from '@buildeross/hooks'
 import { type ZoraDropFragment } from '@buildeross/sdk/subgraph'
 import { useDaoStore } from '@buildeross/stores'
 import { CHAIN_ID } from '@buildeross/types'
@@ -52,13 +56,13 @@ export const DropInfo = ({
     enabled: !!transactionHash,
   })
 
-  // Fetch creator ENS data
-  const { displayName: creatorDisplayName, ensAvatar: creatorAvatar } = useEnsData(
+  // Fetch the creator's preferred display identity.
+  const { displayName: creatorDisplayName, avatar: creatorAvatar } = useIdentityData(
     drop.creator as Address
   )
 
-  // Fetch proposer ENS data
-  const { displayName: proposerDisplayName, ensAvatar: proposerAvatar } = useEnsData(
+  // Fetch the proposer's preferred display identity.
+  const { displayName: proposerDisplayName, avatar: proposerAvatar } = useIdentityData(
     (proposal?.proposer ?? undefined) as Address | undefined
   )
 

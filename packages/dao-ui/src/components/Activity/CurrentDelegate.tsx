@@ -52,27 +52,22 @@ export const CurrentDelegate = ({
           style={{ cursor: 'pointer' }}
         >
           <Box mr={'x2'}>
-            {membership.delegate.ensAvatar ? (
-              <img
-                src={membership.delegate.ensAvatar}
-                alt="avatar"
-                height={28}
-                width={28}
-              />
+            {membership.delegate.avatar ? (
+              <img src={membership.delegate.avatar} alt="avatar" height={28} width={28} />
             ) : (
               <Avatar address={membership.delegate.ethAddress} size={'28'} />
             )}
           </Box>
 
-          {membership.delegate.ensName ? (
+          {membership.delegate.displaySource !== 'address' ? (
             <>
-              <Box mr={'x2'}>{membership.delegate.ensName}</Box>
+              <Box mr={'x2'}>{membership.delegate.displayName}</Box>
               <Box color="text4" ml="auto">
                 {walletSnippet(membership.delegate.ethAddress)}
               </Box>
             </>
           ) : (
-            <Box mr="auto">{walletSnippet(membership.delegate.ethAddress)}</Box>
+            <Box mr="auto">{membership.delegate.displayName}</Box>
           )}
         </Flex>
         <CopyButton text={membership.delegate.ethAddress} />

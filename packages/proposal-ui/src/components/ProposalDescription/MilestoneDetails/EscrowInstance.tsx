@@ -1,6 +1,6 @@
 import { BASE_URL } from '@buildeross/constants/baseUrl'
 import { ETHERSCAN_BASE_URL } from '@buildeross/constants/etherscan'
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { type EscrowInstanceData } from '@buildeross/hooks/useInvoiceData'
 import { useIsGnosisSafe } from '@buildeross/hooks/useIsGnosisSafe'
 import { useTokenMetadataSingle } from '@buildeross/hooks/useTokenMetadata'
@@ -115,7 +115,7 @@ export const EscrowInstance = ({
     [clientAddress, address]
   )
 
-  const { displayName: clientDisplayName } = useEnsData(clientAddress)
+  const { displayName: clientDisplayName } = useIdentityData(clientAddress)
 
   const handleReleaseMilestoneAsProposal = useCallback(
     async (milestone: number) => {

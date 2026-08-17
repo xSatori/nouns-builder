@@ -1,3 +1,4 @@
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import type { PopUpProps } from '@buildeross/zord'
 import { type ComponentProps } from 'react'
 
@@ -38,11 +39,19 @@ export const WalletIdentityWithPreview = ({
   placement,
   allowFlip,
 }: WalletIdentityWithPreviewProps) => {
+  const identity = useIdentityData(address)
+  const resolvedDisplayName =
+    identity.displaySource === 'address' ? displayName : identity.displayName
+  const resolvedAvatarSrc = identity.avatar || avatarSrc
+  const secondaryName =
+    identity.displaySource === 'farcaster' ? identity.ensName || undefined : undefined
+
   return (
     <WalletProfilePreview
       address={address}
-      displayName={displayName || undefined}
-      avatarSrc={avatarSrc}
+      displayName={resolvedDisplayName || undefined}
+      secondaryName={secondaryName}
+      avatarSrc={resolvedAvatarSrc}
       inline={inline}
       mobileTapBehavior={mobileTapBehavior}
       placement={placement}
@@ -50,8 +59,8 @@ export const WalletIdentityWithPreview = ({
     >
       <WalletIdentity
         address={address}
-        displayName={displayName}
-        avatarSrc={avatarSrc}
+        displayName={resolvedDisplayName}
+        avatarSrc={resolvedAvatarSrc}
         avatarSize={avatarSize}
         className={className}
         nameVariant={nameVariant}

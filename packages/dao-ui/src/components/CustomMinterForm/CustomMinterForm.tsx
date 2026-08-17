@@ -1,4 +1,4 @@
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { tokenAbi } from '@buildeross/sdk/contract'
 import { useChainStore, useDaoStore } from '@buildeross/stores'
 import { AddressType } from '@buildeross/types'
@@ -26,8 +26,7 @@ export const CustomMinterForm: React.FC = () => {
   const [error, setError] = React.useState<string>('')
   const [success, setSuccess] = React.useState<string>('')
 
-  // Get ENS data for signer address
-  const { ensName: signerEnsName } = useEnsData(signerAddress)
+  const { displayName: signerDisplayName } = useIdentityData(signerAddress)
 
   const handleMint = React.useCallback(async () => {
     if (!recipient) {
@@ -87,7 +86,7 @@ export const CustomMinterForm: React.FC = () => {
   }, [recipient, tokenId, addresses.token, chain.id, config, writeContractAsync])
 
   const displaySignerAddress =
-    signerEnsName ||
+    signerDisplayName ||
     (signerAddress ? `${signerAddress.slice(0, 6)}...${signerAddress.slice(-4)}` : '')
 
   return (

@@ -33,9 +33,10 @@ vi.mock('@buildeross/hooks/useActiveMembers', () => ({
   }),
 }))
 
-vi.mock('@buildeross/hooks/useEnsData', () => ({
-  useEnsData: (address?: string) => ({
+vi.mock('@buildeross/hooks/useIdentityData', () => ({
+  useIdentityData: (address?: string) => ({
     displayName: address,
+    avatar: undefined,
     ensName: undefined,
     ensAvatar: undefined,
     ethAddress: address,

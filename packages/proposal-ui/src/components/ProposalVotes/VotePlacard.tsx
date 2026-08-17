@@ -1,4 +1,4 @@
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { ProposalVoteFragment, ProposalVoteSupport } from '@buildeross/sdk/subgraph'
 import { WalletIdentityWithPreview } from '@buildeross/ui'
 import { walletSnippet } from '@buildeross/utils/helpers'
@@ -30,7 +30,7 @@ export interface VotePlacardProps {
 }
 
 export const VotePlacard: React.FC<VotePlacardProps> = ({ vote, totalVotes }) => {
-  const { ensName, ensAvatar } = useEnsData(vote.voter)
+  const { displayName, avatar } = useIdentityData(vote.voter)
 
   const supportStyle = useMemo(() => {
     const base = atoms({
@@ -93,8 +93,8 @@ export const VotePlacard: React.FC<VotePlacardProps> = ({ vote, totalVotes }) =>
         >
           <WalletIdentityWithPreview
             address={vote.voter as `0x${string}`}
-            displayName={ensName || walletSnippet(vote.voter)}
-            avatarSrc={ensAvatar}
+            displayName={displayName || walletSnippet(vote.voter)}
+            avatarSrc={avatar}
             avatarSize="28"
           />
         </Box>

@@ -1,4 +1,4 @@
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { AddressType } from '@buildeross/types'
 import { Avatar } from '@buildeross/ui/Avatar'
 import { useLinks } from '@buildeross/ui/LinksProvider'
@@ -14,7 +14,7 @@ interface FounderProps {
 
 export const Founder: React.FC<FounderProps> = ({ wallet, ownershipPct, vestExpiry }) => {
   const [showTooltip, setShowTooltip] = useState(false)
-  const { displayName, ensAvatar } = useEnsData(wallet as string)
+  const { displayName, avatar } = useIdentityData(wallet as string)
   const vestDate = new Date(vestExpiry * 1000).toLocaleDateString(undefined, {
     year: 'numeric',
     month: 'short',
@@ -36,7 +36,7 @@ export const Founder: React.FC<FounderProps> = ({ wallet, ownershipPct, vestExpi
       px="x6"
     >
       <Link direction={'row'} align={'center'} link={getProfileLink?.(wallet)} flex={1}>
-        <Avatar address={wallet} src={ensAvatar} size={'40'} />
+        <Avatar address={wallet} src={avatar} size={'40'} />
         <Flex direction={'column'} ml={'x2'}>
           <Text fontWeight={'display'}>{displayName}</Text>
         </Flex>

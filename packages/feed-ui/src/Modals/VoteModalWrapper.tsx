@@ -167,9 +167,9 @@ const DelegatedVotesContent: React.FC<{
         px="x4"
       >
         <Box>
-          {membership.delegate.ensAvatar ? (
+          {membership.delegate.avatar ? (
             <img
-              src={membership.delegate.ensAvatar}
+              src={membership.delegate.avatar}
               alt="avatar"
               height={28}
               width={28}
@@ -180,15 +180,15 @@ const DelegatedVotesContent: React.FC<{
           )}
         </Box>
 
-        {membership.delegate.ensName ? (
+        {membership.delegate.displaySource !== 'address' ? (
           <>
-            <Box>{membership.delegate.ensName}</Box>
+            <Box>{membership.delegate.displayName}</Box>
             <Box color="text4" ml="auto">
               {walletSnippet(membership.delegate.ethAddress)}
             </Box>
           </>
         ) : (
-          <Box>{walletSnippet(membership.delegate.ethAddress)}</Box>
+          <Box>{membership.delegate.displayName}</Box>
         )}
       </Flex>
 

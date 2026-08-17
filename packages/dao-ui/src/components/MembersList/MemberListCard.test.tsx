@@ -5,15 +5,18 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { MemberCard } from './MemberListCard'
 
-vi.mock('@buildeross/hooks/useEnsData', () => ({
-  useEnsData: (address?: string) => ({
-    displayName: address,
-    ensName: undefined,
-    ensAvatar: undefined,
-    ethAddress: address,
-    isLoading: false,
-    error: undefined,
-  }),
+const mockUseIdentityData = vi.fn((address?: string) => ({
+  displayName: address,
+  avatar: undefined as string | undefined,
+  ensName: undefined as string | undefined,
+  ensAvatar: undefined as string | undefined,
+  ethAddress: address,
+  isLoading: false,
+  error: undefined,
+}))
+
+vi.mock('@buildeross/hooks/useIdentityData', () => ({
+  useIdentityData: (address?: string) => mockUseIdentityData(address),
 }))
 
 const member: DaoVoter = {
@@ -24,6 +27,23 @@ const member: DaoVoter = {
 }
 
 describe('MemberCard', () => {
+  it('renders the shared preferred identity display name', () => {
+    mockUseIdentityData.mockReturnValueOnce({
+      displayName: 'Farcaster Display Name',
+      avatar: 'https://example.com/farcaster.png',
+      ensName: 'legacy.eth',
+      ensAvatar: undefined,
+      ethAddress: member.voter,
+      isLoading: false,
+      error: undefined,
+    })
+
+    render(<MemberCard member={member} totalSupply={100} />)
+
+    expect(screen.getByText('Farcaster Display Name')).toBeInTheDocument()
+    expect(screen.queryByText('legacy.eth')).not.toBeInTheDocument()
+  })
+
   it('renders member details', () => {
     render(<MemberCard member={member} totalSupply={100} />)
 

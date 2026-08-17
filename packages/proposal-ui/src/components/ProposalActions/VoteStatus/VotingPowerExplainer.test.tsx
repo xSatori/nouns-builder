@@ -48,8 +48,8 @@ vi.mock('@buildeross/hooks/useDaoMembership', () => ({
   useDaoMembership: () => mockMembershipReturn,
 }))
 
-vi.mock('@buildeross/hooks/useEnsData', () => ({
-  useEnsData: (addr?: string) => ({
+vi.mock('@buildeross/hooks/useIdentityData', () => ({
+  useIdentityData: (addr?: string) => ({
     displayName: addr ? 'delegate.eth' : '',
     isLoading: false,
   }),

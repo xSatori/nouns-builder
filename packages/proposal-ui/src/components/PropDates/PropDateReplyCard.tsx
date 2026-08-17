@@ -1,4 +1,4 @@
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { type PropDate } from '@buildeross/sdk/subgraph'
 import { WalletIdentityWithPreview } from '@buildeross/ui'
 import { MarkdownDisplay } from '@buildeross/ui/MarkdownDisplay'
@@ -9,14 +9,14 @@ import { Box, Flex, Text } from '@buildeross/zord'
 import { proposalDescription as messageStyle } from '../ProposalDescription/ProposalDescription.css'
 
 export const PropDateReplyCard = ({ reply }: { reply: PropDate }) => {
-  const { ensName, ensAvatar } = useEnsData(reply.creator)
+  const { displayName, avatar } = useIdentityData(reply.creator)
 
   return (
     <Flex direction="row" gap="x2" align="flex-start" mb="x3">
       <WalletIdentityWithPreview
         address={reply.creator as `0x${string}`}
-        displayName={ensName || walletSnippet(reply.creator)}
-        avatarSrc={ensAvatar}
+        displayName={displayName || walletSnippet(reply.creator)}
+        avatarSrc={avatar}
         avatarSize="24"
         nameVariant="label-sm"
         nameWeight="display"

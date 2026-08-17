@@ -1,5 +1,5 @@
 import { type DropInstanceData } from '@buildeross/hooks/useDropData'
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { useMediaType } from '@buildeross/hooks/useMediaType'
 import { type CHAIN_ID } from '@buildeross/types'
 import { AccordionItem } from '@buildeross/ui/Accordion'
@@ -27,9 +27,8 @@ const UINT_32_MAX = maxUint32
 export const DropItem = ({ drop, index, isExecuted, chainId }: DropItemProps) => {
   const { getDropLink } = useLinks()
 
-  const { displayName: fundsRecipientName, ensAvatar: fundsRecipientAvatar } = useEnsData(
-    drop.fundsRecipient
-  )
+  const { displayName: fundsRecipientName, avatar: fundsRecipientAvatar } =
+    useIdentityData(drop.fundsRecipient)
   const dropLink = drop.address ? getDropLink(chainId, drop.address) : null
 
   // Get media type for animation_url if present

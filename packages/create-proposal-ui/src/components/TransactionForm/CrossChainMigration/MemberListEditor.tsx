@@ -1,4 +1,4 @@
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { Box, Button, Flex, Heading, Stack, Text } from '@buildeross/zord'
 import { useState } from 'react'
 
@@ -75,7 +75,7 @@ export const MemberListEditor: React.FC<MemberListEditorProps> = ({
     return `${tokens.slice(0, 5).join(', ')} ... (+${tokens.length - 5} more)`
   }
 
-  // Member row component with ENS display
+  // Member row component with preference-aware identity display.
   const MemberRow = ({
     member,
     index,
@@ -83,7 +83,7 @@ export const MemberListEditor: React.FC<MemberListEditorProps> = ({
     member: DaoMemberSimplified
     index: number
   }) => {
-    const { displayName, ensName, isLoading } = useEnsData(member.owner)
+    const { displayName, ensName, isLoading } = useIdentityData(member.owner)
 
     return (
       <Box

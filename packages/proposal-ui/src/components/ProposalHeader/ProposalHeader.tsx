@@ -1,5 +1,5 @@
 import { ETHERSCAN_BASE_URL } from '@buildeross/constants/etherscan'
-import { useEnsData } from '@buildeross/hooks/useEnsData'
+import { useIdentityData } from '@buildeross/hooks/useIdentityData'
 import { ProposalState } from '@buildeross/sdk/contract'
 import { Proposal } from '@buildeross/sdk/subgraph'
 import { useChainStore } from '@buildeross/stores'
@@ -34,8 +34,8 @@ export const ProposalHeader: React.FC<ProposalHeaderProps> = ({
 }) => {
   const { title, proposer, proposalNumber } = proposal
 
-  const { displayName: proposerDisplayName, ensAvatar: proposerAvatar } =
-    useEnsData(proposer)
+  const { displayName: proposerDisplayName, avatar: proposerAvatar } =
+    useIdentityData(proposer)
   const chain = useChainStore((x) => x.chain)
 
   const displayTransactionHash = getDisplayTransactionHash(proposal)

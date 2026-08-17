@@ -1,4 +1,4 @@
-import { useEnsData } from '@buildeross/hooks'
+import { useIdentityData } from '@buildeross/hooks'
 import { governorAbi } from '@buildeross/sdk/contract'
 import type { AddressType, BytesType, CHAIN_ID } from '@buildeross/types'
 import { WalletIdentity } from '@buildeross/ui'
@@ -125,14 +125,14 @@ interface SignerRowProps {
 }
 
 function SignerRow({ address }: SignerRowProps) {
-  const { displayName, ensAvatar } = useEnsData(address)
+  const { displayName, avatar } = useIdentityData(address)
 
   return (
     <Flex align="center" justify="space-between" className={styles.signerRow}>
       <WalletIdentity
         address={address}
         displayName={displayName}
-        avatarSrc={ensAvatar}
+        avatarSrc={avatar}
         avatarSize="32"
         asLink
       />

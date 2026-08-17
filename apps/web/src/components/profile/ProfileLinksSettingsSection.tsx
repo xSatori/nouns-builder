@@ -7,7 +7,6 @@ import {
   PROFILE_LINK_SCHEMA_UID,
 } from '@buildeross/constants'
 import type { AddressType } from '@buildeross/types'
-import { AnimatedModal } from '@buildeross/ui/Modal'
 import { Box, Button, Flex, Text } from '@buildeross/zord'
 import React from 'react'
 import {
@@ -48,18 +47,16 @@ const schemaRegistryAbi = [
 
 const PROFILE_LINK_SCHEMA_REGISTERED_KEY = `builder-profile-link-schema-registered:${PROFILE_LINK_EAS_CHAIN_ID}:${PROFILE_LINK_SCHEMA_UID}`
 
-type ProfileLinksEditModalProps = {
+type ProfileLinksSettingsSectionProps = {
   identity?: ProfileIdentity
   profileAddress: AddressType
-  open: boolean
   onClose: () => void
   onSaved?: () => void
 }
 
-export const ProfileLinksEditModal: React.FC<ProfileLinksEditModalProps> = ({
+export const ProfileLinksSettingsSection: React.FC<ProfileLinksSettingsSectionProps> = ({
   identity,
   profileAddress,
-  open,
   onClose,
   onSaved,
 }) => {
@@ -74,14 +71,13 @@ export const ProfileLinksEditModal: React.FC<ProfileLinksEditModalProps> = ({
   const [isSaving, setIsSaving] = React.useState(false)
 
   React.useEffect(() => {
-    if (!open) return
     setWebsite(identity?.website?.href ?? '')
     setXHandle(identity?.x?.label ?? '')
     setFarcasterHandle(identity?.farcaster?.label ?? '')
     setError(null)
     setTxHashes([])
     setIsSaving(false)
-  }, [identity, open])
+  }, [identity])
 
   const buildUpdates = (): ProfileLinkUpdate[] => {
     const nextWebsiteInput = website.trim()
@@ -306,80 +302,77 @@ export const ProfileLinksEditModal: React.FC<ProfileLinksEditModalProps> = ({
   }
 
   return (
-    <AnimatedModal open={open} close={onClose} size="medium">
-      <Flex direction="column" gap="x5" w="100%">
-        <Flex direction="column" gap="x2">
-          <Text variant="heading-sm">Edit links</Text>
-          <Text color="text3">
-            ENS links are used by default. Saving creates Builder-only profile overrides
-            on Base.
-          </Text>
-        </Flex>
-
-        <Box className={delegateModalSection}>
-          <Flex direction="column" gap="x4">
-            <label>
-              <Text className={filterLabel}>Website</Text>
-              <input
-                className={profileLinkEditInput}
-                placeholder="https://example.com"
-                value={website}
-                onChange={(event) => setWebsite(event.target.value)}
-              />
-            </label>
-
-            <label>
-              <Text className={filterLabel}>X</Text>
-              <input
-                className={profileLinkEditInput}
-                placeholder="@handle"
-                value={xHandle}
-                onChange={(event) => setXHandle(event.target.value)}
-              />
-            </label>
-
-            <label>
-              <Text className={filterLabel}>Farcaster</Text>
-              <input
-                className={profileLinkEditInput}
-                placeholder="@handle"
-                value={farcasterHandle}
-                onChange={(event) => setFarcasterHandle(event.target.value)}
-              />
-            </label>
-          </Flex>
-        </Box>
-
-        <Box className={delegateModalSection}>
-          <Text color="text3" fontSize="14">
-            This attests the fields you changed with the {PROFILE_LINK_SCHEMA} EAS schema.
-            If this is the first profile link update on this network, your wallet may ask
-            to register the schema first.
-          </Text>
-        </Box>
-
-        {error ? (
-          <Text color="negative" style={{ wordBreak: 'break-word' }}>
-            {error}
-          </Text>
-        ) : null}
-
-        {txHashes.length ? (
-          <Text color="positive">
-            Links updated. Refresh may take a moment while the subgraph indexes the
-            attestation.
-          </Text>
-        ) : null}
-
-        <Flex justify="flex-end" gap="x3">
-          <Button variant="outline" onClick={onClose} disabled={isSaving}>
-            Close
-          </Button>
-          <Button onClick={handleSave} disabled={isSaving}>
-            {isSaving ? 'Saving...' : 'Save links'}
-          </Button>
-        </Flex>
+    <Flex direction="column" gap="x5" w="100%">
+      <Flex direction="column" gap="x2">
+        <Text as="h3" variant="heading-sm">
+          Links
+        </Text>
+        <Text color="text3">
+          ENS links are used by default. Saving creates Builder-only profile overrides on
+          Base.
+        </Text>
       </Flex>
-    </AnimatedModal>
+
+      <Box className={delegateModalSection}>
+        <Flex direction="column" gap="x4">
+          <label>
+            <Text className={filterLabel}>Website</Text>
+            <input
+              className={profileLinkEditInput}
+              placeholder="https://example.com"
+              value={website}
+              onChange={(event) => setWebsite(event.target.value)}
+            />
+          </label>
+
+          <label>
+            <Text className={filterLabel}>X</Text>
+            <input
+              className={profileLinkEditInput}
+              placeholder="@handle"
+              value={xHandle}
+              onChange={(event) => setXHandle(event.target.value)}
+            />
+          </label>
+
+          <label>
+            <Text className={filterLabel}>Farcaster</Text>
+            <input
+              className={profileLinkEditInput}
+              placeholder="@handle"
+              value={farcasterHandle}
+              onChange={(event) => setFarcasterHandle(event.target.value)}
+            />
+          </label>
+        </Flex>
+      </Box>
+
+      <Box className={delegateModalSection}>
+        <Text color="text3" fontSize="14">
+          This attests the fields you changed with the {PROFILE_LINK_SCHEMA} EAS schema.
+          If this is the first profile link update on this network, your wallet may ask to
+          register the schema first.
+        </Text>
+      </Box>
+
+      {error ? (
+        <Text color="negative" style={{ wordBreak: 'break-word' }}>
+          {error}
+        </Text>
+      ) : null}
+
+      {txHashes.length ? (
+        <Text color="positive">
+          Links updated. Refresh may take a moment while the subgraph indexes the
+          attestation.
+        </Text>
+      ) : null}
+
+      <Flex justify="flex-end">
+        <Button onClick={handleSave} disabled={isSaving}>
+          {isSaving ? 'Saving...' : 'Save Settings'}
+        </Button>
+      </Flex>
+    </Flex>
   )
 }

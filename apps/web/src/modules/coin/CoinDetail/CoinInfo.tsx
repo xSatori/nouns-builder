@@ -1,7 +1,7 @@
 import { BASE_URL } from '@buildeross/constants/baseUrl'
 import {
   useClankerTokenWithPrice,
-  useEnsData,
+  useIdentityData,
   useMediaType,
   useProposalByExecutionTx,
   useZoraCoinWithPrice,
@@ -115,13 +115,13 @@ export const CoinInfo = ({
     ? clankerWithPrice.isLoadingPrice
     : zoraCoinWithPrice.isLoadingPrice
 
-  // Fetch creator ENS data
-  const { displayName: creatorDisplayName, ensAvatar: creatorAvatar } = useEnsData(
+  // Fetch the creator's preferred display identity.
+  const { displayName: creatorDisplayName, avatar: creatorAvatar } = useIdentityData(
     creatorAddress || undefined
   )
 
-  // Fetch proposer ENS data
-  const { displayName: proposerDisplayName, ensAvatar: proposerAvatar } = useEnsData(
+  // Fetch the proposer's preferred display identity.
+  const { displayName: proposerDisplayName, avatar: proposerAvatar } = useIdentityData(
     (proposal?.proposer ?? undefined) as Address | undefined
   )
 
